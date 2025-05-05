@@ -1,0 +1,93 @@
+---
+# If true, the FSM transitions are managed by an external tool
+Managed: false
+# If true and the FSM is self-managed, transitions should be triggered
+StepByStep: true
+# Change idle behaviour, if true the state is kept until transition,
+# otherwise the FSM holds the last state until transition
+IdleKeepState: true
+# Where to look for state libraries
+StatesLibraries:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@"
+# Where to look for state files
+StatesFiles:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@/data"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@/data"
+# If true, state factory will be more verbose
+VerboseStateFactory: false
+# Additional robots to load
+robots:
+  ground:
+    module: env/ground
+# General constraints, always on
+constraints:
+- type: contact
+  contactType: position
+- type: kinematics
+  damper: [0.1, 0.01, 0.5]
+  velocityPercent: 0.3
+- type: compoundJoint
+# Collision constraint
+collisions:
+- type: collision
+  useMinimal: true
+# Adaptive gain collision constraints
+closedLoopCollision:
+  - body1: Elaine
+    body2: Farnsworth
+    iDist: 0.015
+    sDist: 0.008
+  - body1: Farnsworth
+    body2: Darlene
+    iDist: 0.015
+    sDist: 0.008
+  - body1: Darlene
+    body2: Elaine
+    iDist: 0.015
+    sDist: 0.008
+# Initial set of contacts
+contacts:
+- r1: mori_tripod
+  r2: ground
+  r1Surface: E_Tip1
+  r2Surface: AllGround
+  dof: [1.0, 1.0, 1.0, 0.0, 1.0, 1.0] # let only this tip slide along X of contact frame
+- r1: mori_tripod
+  r2: ground
+  r1Surface: F_Tip1
+  r2Surface: AllGround
+- r1: mori_tripod
+  r2: ground
+  r1Surface: D_Tip1
+  r2Surface: AllGround
+# Some options for a specific robot
+mori_tripod:
+  posture:
+    stiffness: 3
+    weight: 10
+  ff:
+    stiffness: 1
+    weight: 10
+# base task
+baseTask:
+  type: body6d
+  robot: mori_tripod
+  body: Hiro
+  weight: 1.0
+  stiffness: 1.0
+  dimWeight: [0.0, 0.0, 1.0, 1.0, 1.0, 0.0]
+# Implement some additional text states
+states: {}
+# State configs
+configs:
+  ListenToJoJo:
+    topicMap:
+      0023686F/j: [HR1, HR2, HR3]
+    offsets:
+      0023686F/j: [-0.015775, -0.037947, 0.0195302]
+# Transitions map
+transitions:
+- [TeleoperationDemoTripod_Initial, OK, ListenToJoJo, Strict]
+# Initial state
+init: TeleoperationDemoTripod_Initial
