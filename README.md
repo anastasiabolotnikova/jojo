@@ -15,7 +15,8 @@ In this work we propose a physical and computational platform for user guided co
 
 ```
 @inproceedings{abkh2025,
-  author = {Anastasia Bolotnikova and Kevin Holdcroft and Henry Cerbone and Christoph Belke and Auke Ijspeert and Jamie Paik},
+  author = {Anastasia Bolotnikova* and Kevin Holdcroft* and Henry Cerbone and Christoph Belke and Auke Ijspeert and Jamie Paik},
   title = {Optimized User-Guided Motion Control of Modular Robots},
+  note = {*these authors contributed equally to this work},
   year = {2025}
 }
