@@ -1,0 +1,98 @@
+---
+# If true, the FSM transitions are managed by an external tool
+Managed: false
+# If true and the FSM is self-managed, transitions should be triggered
+StepByStep: true
+# Change idle behaviour, if true the state is kept until transition,
+# otherwise the FSM holds the last state until transition
+IdleKeepState: false
+# Where to look for state libraries
+StatesLibraries:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@"
+# Where to look for state files
+StatesFiles:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@/data"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@/data"
+# If true, state factory will be more verbose
+VerboseStateFactory: false
+# Additional robots to load
+robots:
+  ground:
+    module: env/ground
+# General constraints, always on
+constraints:
+- type: contact
+- type: dynamics
+  damper: [0.1, 0.01, 0.5]
+  velocityPercent: 0.3
+- type: compoundJoint
+
+# Adaptive gain collision constraints
+closedLoopCollision:
+  - body1: Lucille
+    body2: TorsoLink
+    iDist: 0.2
+    sDist: 0.1
+  - body1: Lucille
+    body2: HeadLink
+    iDist: 0.2
+    sDist: 0.1
+  - body1: Itchy
+    body2: Maurice
+    iDist: 0.02
+    sDist: 0.01
+  - body1: Itchy
+    body2: Lucille
+    iDist: 0.02
+    sDist: 0.01
+  - body1: Gina
+    body2: Hiro
+    iDist: 0.02
+    sDist: 0.01
+  - body1: Gina
+    body2: Maurice
+    iDist: 0.02
+    sDist: 0.01
+  - body1: Lucille
+    body2: Hiro
+    iDist: 0.02
+    sDist: 0.01
+  - body1: Lucille
+    body2: Maurice
+    iDist: 0.02
+    sDist: 0.01
+  - body1: Lucille
+    body2: ground
+    iDist: 0.04
+    sDist: 0.03
+
+# Some options for a specific robot'
+mori_arm:
+  posture:
+    stiffness: 1
+    weight: 3
+# Implement some additional text states
+states: {}
+# State configs
+configs:
+  MoveEndTip:
+    endTipTask:
+      type: body6d
+      robot: mori_arm
+      body: SpoonTip
+      dimWeight: [0.01, 0.01, 0.01, 1, 1, 1]
+  ListenToJoJo:
+    topicMap:
+      0023686F/j: [HR3, "", MR1]
+      0022C5AF/j: ["", IR3, GR3]
+    offsets:
+      0023686F/j: [-0.0065, 0, 0.0175]
+      0022C5AF/j: [0, 0.0867, -0.0401]
+
+
+# Transitions map
+transitions:
+- [TeleoperationDemoArmAssist_Initial, OK, ListenToJoJo, Strict]
+# Initial state
+init: TeleoperationDemoArmAssist_Initial

@@ -1,0 +1,5 @@
+add_fsm_state_simple(TeleoperationDemoArmAssist_Initial)
+add_fsm_state_simple(MoveEndTip)
+add_fsm_state_simple(ListenToJoJo)
+
+add_fsm_data_directory(data)
