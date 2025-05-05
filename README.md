@@ -1,5 +1,7 @@
 # Optimized User-Guided Motion Control of Modular Robots
 
+[![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)](https://opensource.org/licenses/BSD-2-Clause)
+
 This repository contains the code of controllers used in the experiments presented in our work on user-guided motion control of modular robots.
 
 In this work we propose a physical and computational platform for user guided control of self-reconfigurable modular robots. This platform consists of an optimization scheme for online processing of user commands, which blocks robot actions that would violate system or environment constraints. The second component consists of Joint-space Joysticks (JoJos), which match the robot’s morphology, enabling the user to control diverse and dynamically changing modular robot structures through direct physical interaction.
