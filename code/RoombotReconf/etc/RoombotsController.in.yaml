@@ -1,0 +1,165 @@
+---
+# If true, the FSM transitions are managed by an external tool
+Managed: false
+# If true and the FSM is self-managed, transitions should be triggered
+StepByStep: true
+# Change idle behaviour, if true the state is kept until transition,
+# otherwise the FSM holds the last state until transition
+IdleKeepState: true
+# Where to look for state libraries
+StatesLibraries:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@"
+# Where to look for state files
+StatesFiles:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@/data"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@/data"
+# If true, state factory will be more verbose
+VerboseStateFactory: false
+# Additional robots to load
+robots:
+  ground:
+    module: env/ground
+  roombot_13:
+    module: roombot
+    init_pos:
+      translation: [0.11, 0.11, 0]
+  roombot_16:
+    module: roombot
+
+# General constraints, always on
+constraints:
+- type: contact
+  contactType: position
+  dynamics: false
+- type: kinematics
+  damper: [0.1, 0.01, 0.5]
+- type: kinematics
+  robot: roombot_13
+  damper: [0.1, 0.01, 0.5]
+  velocityPercent: 1.0
+- type: kinematics
+  robot: roombot_16
+  damper: [0.1, 0.01, 0.5]
+- type: compoundJoint
+
+# Collision constraint
+collisions:
+- type: collision
+  r1: roombot_13
+  r2: ground
+  collisions:
+    - body1: HS3
+      body2: ground
+      iDist: 0.05
+      sDist: 0.001
+      damping: 0
+    - body1: HS4
+      body2: ground
+      iDist: 0.05
+      sDist: 0.001
+      damping: 0
+- type: collision
+  r1: roombot_16
+  r2: ground
+  collisions:
+    - body1: HS3
+      body2: ground
+      iDist: 0.05
+      sDist: 0.001
+      damping: 0
+    - body1: HS4
+      body2: ground
+      iDist: 0.05
+      sDist: 0.001
+      damping: 0
+
+# Initial set of contacts
+contacts:
+- r1: roombot_13
+  r2: ground
+  r1Surface: ACM0
+  r2Surface: AllGround
+- r1: roombot_16
+  r2: ground
+  r1Surface: ACM0
+  r2Surface: AllGround
+
+# Some options for a specific robot
+roombot_13:
+  posture:
+    stiffness: 20
+    weight: 10
+  ff:
+    stiffness: 2
+    weight: 100
+
+roombot_16:
+  posture:
+    stiffness: 20
+    weight: 10
+  ff:
+    stiffness: 2
+    weight: 100
+# Implement some additional text states
+states:
+  MoveHS1:
+    base: MetaTasks
+    tasks:
+      hs1Task:
+        robot: roombot_20
+        type: orientation
+        dimWeight: [0, 0, 1]
+        weight: 100
+        stiffness: 5
+        body: HS2
+      hs4Task:
+        robot: roombot_16
+        type: relBody6d
+        body: HS4
+        relBody: preM2
+        activeJoints: [M2]
+        orientation: [0.0, 0.0, 0.0]
+        position: [0.0, 0.0, 0.0]
+        positionWeight: 0
+      hs3Task:
+        robot: roombot_16
+        type: relBody6d
+        body: HS3
+        relBody: preM1
+        activeJoints: [M1]
+        orientation: [0.0, 0.0, 0.0]
+        position: [0.0, 0.0, 0.0]
+        positionWeight: 0
+      hs2Task:
+        robot: roombot_16
+        type: relBody6d
+        body: HS2
+        relBody: preM0
+        activeJoints: [M0]
+        orientation: [0.0, 0.0, 0.0]
+        position: [0.0, 0.0, 0.0]
+        positionWeight: 0
+# State configs
+configs:
+  ListenToJoJo_PiX:
+    robotMap:
+      roombot_13:
+        00BE6513/j: ["", M0, M1]
+        00BE656F/j: [M2, "", ""]
+      roombot_16:
+        00BE6515/j: ["", M0, M1]
+        00BE65D5/j: [M2, "", ""]
+    offsets:
+      roombot_13:
+        00BE6513/j: [0., -3.26897, -0.7673]
+        00BE656F/j: [-3.09796, 0., 0.]
+      roombot_16:
+        00BE6515/j: [0, -3.6232, -2.3356]
+        00BE65D5/j: [-4.2775, 0, 0]
+
+# Transitions map
+transitions:
+- [RoombotsController_Initial, OK, ListenToJoJo_PiX, Strict]
+# Initial state
+init: RoombotsController_Initial
