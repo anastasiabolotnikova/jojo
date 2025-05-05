@@ -1,0 +1,4 @@
+add_fsm_state_simple(TeleoperationDemoGripper_Initial)
+add_fsm_state_simple(ListenToJoJo)
+
+add_fsm_data_directory(data)

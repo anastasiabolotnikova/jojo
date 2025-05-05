@@ -1,0 +1,57 @@
+---
+# If true, the FSM transitions are managed by an external tool
+Managed: false
+# If true and the FSM is self-managed, transitions should be triggered
+StepByStep: true
+# Change idle behaviour, if true the state is kept until transition,
+# otherwise the FSM holds the last state until transition
+IdleKeepState: true
+# Where to look for state libraries
+StatesLibraries:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@"
+# Where to look for state files
+StatesFiles:
+- "@MC_STATES_DEFAULT_RUNTIME_INSTALL_PREFIX@/data"
+- "@MC_STATES_RUNTIME_INSTALL_PREFIX@/data"
+# If true, state factory will be more verbose
+VerboseStateFactory: false
+# Additional robots to load
+robots:
+  ground:
+    module: env/ground
+# General constraints, always on
+constraints:
+- type: contact
+- type: dynamics
+  damper: [0.1, 0.01, 0.5]
+- type: compoundJoint
+
+closedLoopCollision:
+  - body1: Darlene
+    body2: Itchy
+    iDist: 0.015
+    sDist: 0.007
+
+# Some options for a specific robot
+mori_gripper:
+  posture:
+    stiffness: 1
+    weight: 3
+# Implement some additional text states
+states: {}
+# State configs
+configs:
+  ListenToJoJo:
+    topicMap:
+      0023686F/j: [ER3, HR3, HR1]
+    offsets:
+      0023686F/j: [0.002799, -0.003991, -0.00407971]
+  RaiseHand:
+    postureGoal:
+      ER3: [1.8]
+# Transitions map
+transitions:
+- [TeleoperationDemoGripper_Initial, OK, ListenToJoJo, Strict]
+# Initial state
+init: TeleoperationDemoGripper_Initial
